@@ -1,0 +1,80 @@
+<?php 
+if(isset($_POST['download'])){
+  $imgUrl = $_POST['imgurl'];
+  $ch = curl_init($imgUrl);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+  $download = curl_exec($ch);
+  curl_close($ch);
+  header('content_typr:image/jpg');
+  header('content_Disposition:attachment; filename="thumbnail.jpg"');
+  echo $download;
+}
+?>
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video downloader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <body>
+        <form action="<?php echo $_SERVER['PHP_SELF'];" method="POST" { }>
+            <header>Download Thumbnail</header>
+            <div class="url-input">
+                <span class="title">Paste vidio url:</span>
+                <div class="field">
+
+                    <input type="text" placeholder="https:/www.youtube.com/watch?v=lqwdD2vibM" required>
+                    <input type="hidden-input" class="hidden" name="imgurl">
+                    <div class="bottom-line"></div>
+
+                </div>
+            </div>
+            <div class="preview-area">
+                <img class="thumbnail" src="" alt="thumbnail">
+                <i class=" icon fas fa-cloud-download-alt"></i>
+                <span>Paste video url to see preview</span>
+            </div>
+            <button class="download-btn" type="submit" name="download">Download Thumbnail</button>
+        </form>
+
+        <script>
+            const urlField = document.querySelector(".field input"),
+                previewArea = document.querySelector(".preview-area"),
+                imgTag = previewArea.querySelector(".thumbnail");
+            hiddenInput = previewArea.querySelector("hidden-input");
+
+
+            urlField.onkeyUp = () => {
+                let imgUrl = urlField.value; //getting user entered value
+                previewArea.classList.add("active");
+
+                if (imgUrl.indexOf("https:/www.youtube.com/watch?v=") != -1) {
+                    let vidId = imgUrl.split("v=")[1].substring(0, 11);
+                    let ytThumbUrl = `https://img.youtube.com/vi/${vidId}/maxresdefault.jpg`;
+                    imgTag.src = ytThumbUrl;
+                } else if (imgUrl.indexOf("https:/www.youtu.be/") != -1) {
+                    let vidId = imgUrl.split("be/")[1].substring(0, 11);
+                    let ytThumbUrl = `https://img.youtube.com/vi/${vidId}/maxresdefault.jpg`;
+                    imgTag.src = ytThumbUrl;
+
+                } else if (imgUrl.match(/\.(jpe?g|png|gif|bmp|webp)$/i)) {
+                    //if entered value is other image file url
+                    imgTag.src = imgUrl;
+                } else {
+                    imgTag.src = "";
+                    previewArea.classList.remove("active");
+                }
+                hiddenInput.value = imgTag.src;
+            }
+        </script>
+    </body>
+
+</html>

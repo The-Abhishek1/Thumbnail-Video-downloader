@@ -46,7 +46,7 @@ if(isset($_POST['download'])){
         </form>
 
         <script>
-            const urlField = document.querySelector(".field input"),
+            const urlField = document.querySelectorAll(".field input"),
                 previewArea = document.querySelector(".preview-area"),
                 imgTag = previewArea.querySelector(".thumbnail");
             hiddenInput = previewArea.querySelector("hidden-input");
